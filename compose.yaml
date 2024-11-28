@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  signoz_network:
+    external: true
+  caddy_network:
+    external: true
+
+services:
+  emails_sapphirenw_com:
+    build:
+      context: .
+    container_name: emails_sapphirenw_com
+    ports:
+      - "3000:3000"
+    environment:
+      APP_VERSION: v1.0.0
+      APP_PORT: ${APP_PORT}
+      APP_API_KEY: ${APP_API_KEY}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      MYSQL_HOST: ${PROD_MYSQL_HOST}
+      MYSQL_DATABASE: ${PROD_MYSQL_DATABASE}
+      MYSQL_USER: ${PROD_MYSQL_USER}
+      MYSQL_PASS: ${PROD_MYSQL_PASS}
+      # MYSQL_HOST: emails_sapphirenw_com_db
+      # MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # MYSQL_USER: ${MYSQL_USER}
+      # MYSQL_PASS: ${MYSQL_PASS}
+      OTEL_SERVICE_NAME: emails.sapphirenw.com
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_TRACES_EXPORTER: ${OTEL_TRACES_EXPORTER}
+      OTEL_EXPORTER_OTLP_PROTOCOL: ${OTEL_EXPORTER_OTLP_PROTOCOL}
+      LOG_FORMAT: json
+    networks:
+      - signoz_network

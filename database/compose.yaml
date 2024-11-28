@@ -1,0 +1,25 @@
+version: '3.8'
+
+volumes:
+  emails_sapphirenw_com_db_data:
+
+networks:
+  emails_sapphirenw_com_db_net:
+    name: emails_sapphirenw_com_db_net
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: emails_sapphirenw_com_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: email
+    ports:
+      - "3306:3306"
+    volumes:
+      - emails_sapphirenw_com_db_data:/var/lib/mysql
+    networks:
+      - emails_sapphirenw_com_db_net
