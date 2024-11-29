@@ -49,6 +49,6 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          tags:
-            - ghcr.io/${{ github.repository }}:${{ needs.bump_version.outputs.tag }}
-            - ghcr.io/${{ github.repository }}:latest
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ needs.bump_version.outputs.tag }}
+            ghcr.io/${{ github.repository }}:latest
