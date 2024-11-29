@@ -85,7 +85,15 @@ CREATE TABLE IF NOT EXISTS email(
 INSERT INTO project (
     id, title, unsubscribe_url_template, unsubscribe_url_method
 ) VALUES (
-    1, 'Workout Notepad', 'https://emails.workoutnotepad.co/${email}/unsubscribe', 'POST'
+    1, 'Workout Notepad', 'https://emails.sapphirenw.co/${email}/1/unsubscribe', 'POST'
+);
+-- +goose StatementEnd
+
+-- +goose StatementBegin
+INSERT INTO template (
+    project_id, title, sender, subject
+) VALUES (
+    1, 'Welcome to Workout Notepad', 'support@workoutnotepad.co', 'Welcome to Workout Notepad'
 );
 -- +goose StatementEnd
 

@@ -5,6 +5,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import emails from "./email/handler"
 import users from "./project/user/handler"
+import unsubscribe from "./project/user/unsubscribe"
 import { exit } from 'process'
 import pool from "./database/database"
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
@@ -36,8 +37,8 @@ await configure({
     },
     loggers: [
         { category: ["logtape", "meta"], sinks: [] }, // hide metadata logging
-        { category: ["app"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console", "otel"] : ["otel"] },
-        { category: ["middleware"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console", "otel"] : ["otel"] },
+        { category: ["app"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["otel"] },
+        { category: ["middleware"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["otel"] },
     ]
 });
 
@@ -61,7 +62,15 @@ const app = new Hono()
 app.use(requestId())
 app.use(otelMiddleware())
 app.use(loggerMiddleware)
-app.use(bearerAuth({token: process.env.APP_API_KEY}))
+
+// auth middleware
+const authMiddleware = bearerAuth({ token: process.env.APP_API_KEY })
+app.use('*', (ctx, next) => {
+    if (!ctx.req.path.startsWith('/unsubscribe')) {
+      return authMiddleware(ctx, next)
+    }
+    return next()
+})
 
 // default index route
 app.get("/", async (c) => {
@@ -85,6 +94,7 @@ app.get("/", async (c) => {
 // create routes
 app.route("/emails", emails)
 app.route("/users", users)
+app.route("/unsubscribe", unsubscribe)
 
 // for when only using otel collector to show that app started
 console.log(`Server is running on http://localhost:${PORT}`)

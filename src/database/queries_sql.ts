@@ -133,11 +133,13 @@ export async function createProject(client: Client, args: CreateProjectArgs): Pr
 }
 
 export const getProjectsQuery = `-- name: GetProjects :many
-SELECT id, title, metadata, created_at, updated_at FROM project`;
+SELECT id, title, unsubscribe_url_template, unsubscribe_url_method, metadata, created_at, updated_at FROM project`;
 
 export interface GetProjectsRow {
     id: number;
     title: string;
+    unsubscribeUrlTemplate: string;
+    unsubscribeUrlMethod: string;
     metadata: any | null;
     createdAt: Date;
     updatedAt: Date;
@@ -153,15 +155,17 @@ export async function getProjects(client: Client): Promise<GetProjectsRow[]> {
         return {
             id: row[0],
             title: row[1],
-            metadata: row[2],
-            createdAt: row[3],
-            updatedAt: row[4]
+            unsubscribeUrlTemplate: row[2],
+            unsubscribeUrlMethod: row[3],
+            metadata: row[4],
+            createdAt: row[5],
+            updatedAt: row[6]
         };
     });
 }
 
 export const getProjectQuery = `-- name: GetProject :one
-SELECT id, title, metadata, created_at, updated_at FROM project
+SELECT id, title, unsubscribe_url_template, unsubscribe_url_method, metadata, created_at, updated_at FROM project
 WHERE id = ?`;
 
 export interface GetProjectArgs {
@@ -171,6 +175,8 @@ export interface GetProjectArgs {
 export interface GetProjectRow {
     id: number;
     title: string;
+    unsubscribeUrlTemplate: string;
+    unsubscribeUrlMethod: string;
     metadata: any | null;
     createdAt: Date;
     updatedAt: Date;
@@ -189,9 +195,11 @@ export async function getProject(client: Client, args: GetProjectArgs): Promise<
     return {
         id: row[0],
         title: row[1],
-        metadata: row[2],
-        createdAt: row[3],
-        updatedAt: row[4]
+        unsubscribeUrlTemplate: row[2],
+        unsubscribeUrlMethod: row[3],
+        metadata: row[4],
+        createdAt: row[5],
+        updatedAt: row[6]
     };
 }
 

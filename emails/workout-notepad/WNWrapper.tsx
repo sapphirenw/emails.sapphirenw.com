@@ -20,6 +20,7 @@ interface WNWrapperProps {
     preview: string;
     title: string;
     recipient: string;
+    unsubscribeLink: string;
 }
 
 export const WNWrapper: React.FC<Readonly<WNWrapperProps>> = ({
@@ -27,6 +28,7 @@ export const WNWrapper: React.FC<Readonly<WNWrapperProps>> = ({
     preview,
     title,
     recipient,
+    unsubscribeLink,
 }) => (
         <Html>
             <Head />
@@ -86,16 +88,9 @@ export const WNWrapper: React.FC<Readonly<WNWrapperProps>> = ({
                     </Container>
 
                     <Container className="mt-20">
-                        <Section>
-                            <Row>
-                                <Column className="text-sm text-right pr-5">
-                                    <Link className="text-brand-500">Unsubscribe</Link>
-                                </Column>
-                                <Column className="text-sm text-left pl-5">
-                                    <Link className="text-brand-500">Preferences</Link>
-                                </Column>
-                            </Row>
-                        </Section>
+                        {unsubscribeLink == "" ? null : <Text className="text-center text-sm text-brand-500">
+                            <Link href={unsubscribeLink} className="text-brand-500">Unsubscribe</Link>
+                        </Text>}
                         <Text className="text-center text-gray-400 mb-45">
                             Workout Notepad - Portland, OR
                         </Text>

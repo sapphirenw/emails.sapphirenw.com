@@ -46,15 +46,18 @@ const data: {
 
 interface WNWelcomeEmailProps {
     recipient: string;
+    unsubscribeLink: string;
 }
 
 const WNWelcomeEmail: React.FC<Readonly<WNWelcomeEmailProps>> = ({
     recipient,
+    unsubscribeLink,
 }) => (
         <WNWrapper
         preview="Congratulations! We are excited to see the progress you make using Workout Notepad."
         title="Welcome to Workout Notepad"
         recipient={recipient}
+        unsubscribeLink={unsubscribeLink}
         >
             <Section>
                 <Row>
