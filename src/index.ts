@@ -6,6 +6,7 @@ import { Hono } from 'hono'
 import emails from "./email/handler"
 import users from "./project/user/handler"
 import unsubscribe from "./project/user/unsubscribe"
+import webhooks from "./webhooks"
 import { exit } from 'process'
 import pool from "./database/database"
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
@@ -66,7 +67,7 @@ app.use(loggerMiddleware)
 // auth middleware
 const authMiddleware = bearerAuth({ token: process.env.APP_API_KEY })
 app.use('*', (ctx, next) => {
-    if (!ctx.req.path.startsWith('/unsubscribe')) {
+    if (!ctx.req.path.startsWith('/unsubscribe') && !ctx.req.path.startsWith('/webhooks') ) {
       return authMiddleware(ctx, next)
     }
     return next()
@@ -95,6 +96,7 @@ app.get("/", async (c) => {
 app.route("/emails", emails)
 app.route("/users", users)
 app.route("/unsubscribe", unsubscribe)
+app.route("/webhooks", webhooks)
 
 // for when only using otel collector to show that app started
 console.log(`Server is running on http://localhost:${PORT}`)

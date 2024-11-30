@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 import { render } from "@react-email/components";
 import { renderEmail } from "./render"
 import pool from "../database/database";
-import { createEmail, getEmail } from "../database/queries_sql";
+import { createEmail, getEmail, getEmailEvents } from "../database/queries_sql";
 import { fetchUser } from "../project/user/user";
 import { getLogger } from "@logtape/logtape";
 
@@ -32,7 +32,7 @@ const app = new Hono()
 			}
 
 			// parse the body
-			const {body, template, react, plainText} = await renderEmail(rawBody)
+			const {body, template, react, plainText, headers} = await renderEmail(rawBody)
 
 			// get a connection
 			const conn = await pool.getConnection()
@@ -63,6 +63,7 @@ const app = new Hono()
 				tags: body.tags,
 				react: react,
 				text: plainText,
+				headers: headers,
 			});
 	
 			if (error) {
@@ -101,13 +102,16 @@ const app = new Hono()
 			return c.json({error: `failed to fetch an email with the id: ${id}`}, 400)
 		}
 
+		// get the events
+		const events = await getEmailEvents(pool, {emailId: id})
+
 		// get the resend record
 		const resendData = await resend.emails.get(email.id)
 		if (!resendData) {
 			return c.json({error: `failed to get the resend data with id: ${email.id}`}, 400)
 		}
 
-		return c.json({email: email, resend: resendData}, 200)
+		return c.json({email: email, events: events, resend: resendData}, 200)
 	})
 	.post("/:id/cancel") //const { username } = c.req.param()
 

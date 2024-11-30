@@ -34,6 +34,10 @@ connect-dev:
 mig:
 	@goose -dir=./database/migrations mysql "$$PROD_MYSQL_USER:$$PROD_MYSQL_PASS@tcp($$PROD_MYSQL_HOST:3306)/$$PROD_MYSQL_DATABASE" up
 
+.PHONY: mig-down
+mig-down:
+	@goose -dir=./database/migrations mysql "$$PROD_MYSQL_USER:$$PROD_MYSQL_PASS@tcp($$PROD_MYSQL_HOST:3306)/$$PROD_MYSQL_DATABASE" down
+
 .PHONY: mig-redo
 mig-redo:
 	@goose -dir=./database/migrations mysql "$$PROD_MYSQL_USER:$$PROD_MYSQL_PASS@tcp($$PROD_MYSQL_HOST:3306)/$$PROD_MYSQL_DATABASE" redo
@@ -41,6 +45,10 @@ mig-redo:
 .PHONY: mig-dev
 mig-dev:
 	@goose -dir=./database/migrations mysql "admin:admin@tcp(localhost:3306)/email" up
+
+.PHONY: mig-dev-down
+mig-dev-down:
+	@goose -dir=./database/migrations mysql "admin:admin@tcp(localhost:3306)/email" down
 
 .PHONY: mig-dev-redo
 mig-dev-redo:

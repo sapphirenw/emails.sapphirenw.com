@@ -8,6 +8,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 
+// only use otel in dev mode
 if (!process.env.APP_VERSION!.includes("dev")) {
   const sdk = new NodeSDK({
     serviceName: process.env.OTEL_SERVICE_NAME ?? "emails.sapphirenw.com",

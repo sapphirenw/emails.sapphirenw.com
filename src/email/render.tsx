@@ -4,6 +4,7 @@ import pool from '../database/database';
 import { getProject, getTemplate, GetTemplateRow } from '../database/queries_sql';
 import { render } from '@react-email/components';
 import { encodeUnsubscribe } from '../project/user/unsubscribe';
+import { v4 } from 'uuid';
 
 export type EmailBody = {
 	projectId: number
@@ -25,6 +26,7 @@ export type RenderEmailResponse = {
 	body: EmailBody
 	react: JSX.Element
 	plainText: string
+	headers: Record<string, string>
 }
 
 const tracer = trace.getTracer('email');
@@ -64,21 +66,38 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 			value: body.templateId.toString(),
 		})
 
+		// create some metadata for emails
+		var unsubLink = `${process.env.APP_BASE_URL}/unsubscribe/${encodeUnsubscribe(body.to, project.id)}`
+		var headers = {
+			"X-Entity-Ref-ID": v4(), // force emails not to chain
+			"List-Unsubscribe": `<${unsubLink}>`,
+			"List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+		}
+
+		// parse the template based on the id
+		var rendered: JSX.Element | null = null
 		switch (template.id) {
 			case 1:
-				span.end()
-				const rendered = <WNWelcomeEmail
+				rendered = <WNWelcomeEmail
 					recipient={body.to}
-					unsubscribeLink={`${process.env.APP_BASE_URL}/unsubscribe/${encodeUnsubscribe(body.to, project.id)}`}
+					unsubscribeLink={unsubLink}
 				/>
-				return {
-					template: template,
-					body: body,
-					react: rendered,
-					plainText: await render(rendered, {plainText: true})
-				}
+				break
 			default:
 				throw Error(`Invalid templateId: ${body.templateId}`)
+		}
+		if (rendered === null) {
+			throw Error("No template defined")
+		}
+
+		// create the object and return
+		span.end()
+		return {
+			template: template,
+			body: body,
+			react: rendered,
+			plainText: await render(rendered, {plainText: true}),
+			headers: headers,
 		}
     })
 	

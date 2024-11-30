@@ -81,6 +81,39 @@ export async function getEmail(client: Client, args: GetEmailArgs): Promise<GetE
     };
 }
 
+export const getEmailAndUserQuery = `-- name: GetEmailAndUser :one
+SELECT
+    e.id, e.recipient, e.project_id, e.template_id, e.attributes, e.subject, e.cc, e.bcc, e.scheduled_at, e.tags, e.metadata, e.created_at, e.updated_at,
+    u.email, u.project_id, u.name, u.notification_all, u.notification_marketing, u.metadata, u.created_at, u.updated_at
+FROM email e
+JOIN user u ON e.recipient = u.email
+WHERE e.id = ?`;
+
+export interface GetEmailAndUserArgs {
+    id: string;
+}
+
+export interface GetEmailAndUserRow {
+    email: string | null;
+    user: string | null;
+}
+
+export async function getEmailAndUser(client: Client, args: GetEmailAndUserArgs): Promise<GetEmailAndUserRow | null> {
+    const [rows] = await client.query<RowDataPacket[]>({
+        sql: getEmailAndUserQuery,
+        values: [args.id],
+        rowsAsArray: true
+    });
+    if (rows.length !== 1) {
+        return null;
+    }
+    const row = rows[0];
+    return {
+        email: row[0],
+        user: row[1]
+    };
+}
+
 export const getEmailsByUserProjectQuery = `-- name: GetEmailsByUserProject :one
 SELECT
     u.email, u.project_id, u.name, u.notification_all, u.notification_marketing, u.metadata, u.created_at, u.updated_at,
@@ -113,6 +146,55 @@ export async function getEmailsByUserProject(client: Client, args: GetEmailsByUs
         user: row[0],
         email: row[1]
     };
+}
+
+export const createEmailEventQuery = `-- name: CreateEmailEvent :exec
+INSERT INTO email_event (
+    type, created_at, email_id
+) VALUES (?,?,?)`;
+
+export interface CreateEmailEventArgs {
+    type: string;
+    createdAt: Date;
+    emailId: string;
+}
+
+export async function createEmailEvent(client: Client, args: CreateEmailEventArgs): Promise<void> {
+    await client.query({
+        sql: createEmailEventQuery,
+        values: [args.type, args.createdAt, args.emailId]
+    });
+}
+
+export const getEmailEventsQuery = `-- name: GetEmailEvents :many
+SELECT id, type, created_at, email_id FROM email_event
+WHERE email_id = ?`;
+
+export interface GetEmailEventsArgs {
+    emailId: string;
+}
+
+export interface GetEmailEventsRow {
+    id: number;
+    type: string;
+    createdAt: Date;
+    emailId: string;
+}
+
+export async function getEmailEvents(client: Client, args: GetEmailEventsArgs): Promise<GetEmailEventsRow[]> {
+    const [rows] = await client.query<RowDataPacket[]>({
+        sql: getEmailEventsQuery,
+        values: [args.emailId],
+        rowsAsArray: true
+    });
+    return rows.map(row => {
+        return {
+            id: row[0],
+            type: row[1],
+            createdAt: row[2],
+            emailId: row[3]
+        };
+    });
 }
 
 export const createProjectQuery = `-- name: CreateProject :exec
