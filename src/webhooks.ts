@@ -22,11 +22,26 @@ const app = new Hono()
         const body: WebhookPayload = await c.req.json()
         logger.info("handling resend webhook payload", {body: body})
 
-        await createEmailEvent(pool, {
-            type: body.type,
-            createdAt: new Date(body.created_at),
-            emailId: body.data.email_id,
-        })
+        try {
+            await createEmailEvent(pool, {
+                type: body.type,
+                createdAt: new Date(body.created_at),
+                emailId: body.data.email_id,
+            })
+        } catch (_e) {
+            const e = _e as Error
+            // check if this is referencing a foreign key contraint
+            // because this may be a debug event
+            if (e.message.includes("a foreign key constraint fails")) {
+                // ignore this message
+                logger.info("Foreign key contraint failed")
+                return c.text("Success", 200)
+            }
+
+			logger.error(e.message, { "stack": e.stack })
+            return c.text("There was an unknown error", 500)
+        }
+
         logger.info("Successfully inserted email event", {status: body.type})
 
         return c.text("Success", 200)
