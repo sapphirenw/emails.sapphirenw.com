@@ -52,5 +52,8 @@ jobs:
         run: |
           goose -dir=./database/migrations $DB_DRIVER $DB_STRING up
 
+      - name: Install Node Dependencies
+        run: npm install
+
       - name: Run Tests
         run: npm test
