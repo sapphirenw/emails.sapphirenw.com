@@ -47,22 +47,22 @@ const WNFeedback: React.FC<Readonly<WNFeedbackProps>> = ({
             <Section className="rounded-md overflow-hidden">
                 <Row>
                     <Column className="w-[25%] h-10 bg-brand-50">
-                        <Link href={`https://api.workoutnotepad.co/public/feedback?email=${recipient}&status=bad`}>
+                        <Link href={`https://api2.workoutnotepad.co/public/feedback?email=${recipient}&status=bad`}>
                             <Text className="m-0 text-center text-slate-600">Bad</Text>
                         </Link>
                     </Column>
                     <Column className="w-[25%] h-10 bg-brand-100">
-                        <Link href={`https://api.workoutnotepad.co/public/feedback?email=${recipient}&status=okay`}>
+                        <Link href={`https://api2.workoutnotepad.co/public/feedback?email=${recipient}&status=okay`}>
                             <Text className="m-0 text-center text-slate-600">Okay</Text>
                         </Link>
                     </Column>
                     <Column className="w-[25%] h-10 bg-brand-200">
-                        <Link href={`https://api.workoutnotepad.co/public/feedback?email=${recipient}&status=good`}>
+                        <Link href={`https://api2.workoutnotepad.co/public/feedback?email=${recipient}&status=good`}>
                             <Text className="m-0 text-center text-slate-600">Good</Text>
                         </Link>
                     </Column>
                     <Column className="w-[25%] h-10 bg-brand-300">
-                        <Link href={`https://api.workoutnotepad.co/public/feedback?email=${recipient}&status=great`}>
+                        <Link href={`https://api2.workoutnotepad.co/public/feedback?email=${recipient}&status=great`}>
                             <Text className="m-0 text-center text-slate-600">Great</Text>
                         </Link>
                     </Column>
