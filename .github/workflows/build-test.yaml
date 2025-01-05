@@ -14,7 +14,7 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: email
           MYSQL_USER: admin
           MYSQL_PASSWORD: admin
         options: >-
