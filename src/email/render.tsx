@@ -5,6 +5,7 @@ import { getProject, getTemplate, GetTemplateRow } from '../database/queries_sql
 import { render } from '@react-email/components';
 import { encodeUnsubscribe } from '../project/user/unsubscribe';
 import { v4 } from 'uuid';
+import WNFeedback from '../../emails/workout-notepad/WNFeedback';
 
 export type EmailBody = {
 	projectId: number
@@ -18,7 +19,7 @@ export type EmailBody = {
 	cc?: string
 	bcc?: string
 	scheduledAt?: string
-	tags?: {name: string, value: string}[]
+	tags?: { name: string, value: string }[]
 }
 
 export type RenderEmailResponse = {
@@ -30,7 +31,7 @@ export type RenderEmailResponse = {
 }
 
 const tracer = trace.getTracer('email');
- 
+
 export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse> {
 	return tracer.startActiveSpan('renderEmail', async (span: Span) => {
 		// validate the fields
@@ -38,13 +39,13 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 			throw Error("The `to` field is required")
 		}
 
-		const project = await getProject(pool, {id: body.projectId})
+		const project = await getProject(pool, { id: body.projectId })
 		if (!project) {
 			throw Error(`failed to get the project with id: ${body.projectId}`)
 		}
 
 		// fetch the template
-		const template = await getTemplate(pool, {id: body.templateId})
+		const template = await getTemplate(pool, { id: body.templateId })
 		if (!template) {
 			throw Error("failed to get the template")
 		}
@@ -52,7 +53,7 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 		// add field overrides
 		body.from = template.sender ?? body.from
 		body.subject = template.subject ?? body.subject
-		
+
 		// add extra tags
 		if (body.tags === undefined) {
 			body.tags = []
@@ -83,6 +84,12 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 					unsubscribeLink={unsubLink}
 				/>
 				break
+			case 2:
+				rendered = <WNFeedback
+					recipient={body.to}
+					unsubscribeLink={unsubLink}
+				/>
+				break
 			default:
 				throw Error(`Invalid templateId: ${body.templateId}`)
 		}
@@ -96,9 +103,9 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 			template: template,
 			body: body,
 			react: rendered,
-			plainText: await render(rendered, {plainText: true}),
+			plainText: await render(rendered, { plainText: true }),
 			headers: headers,
 		}
-    })
-	
+	})
+
 }

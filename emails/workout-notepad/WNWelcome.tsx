@@ -7,7 +7,7 @@ import {
     Hr,
 } from "@react-email/components";
 import * as React from "react";
-import { WNWrapper } from "./WNWrapper.js";
+import { WNWrapper } from "./WNWrapper";
 
 const data: {
     title: string,
@@ -53,52 +53,52 @@ const WNWelcomeEmail: React.FC<Readonly<WNWelcomeEmailProps>> = ({
     recipient,
     unsubscribeLink,
 }) => (
-        <WNWrapper
+    <WNWrapper
         preview="Congratulations! We are excited to see the progress you make using Workout Notepad."
         title="Welcome to Workout Notepad"
         recipient={recipient}
         unsubscribeLink={unsubscribeLink}
-        >
-            <Section>
-                <Row>
-                    <Text className="text-base">
-                        Congratulations! We are excited to see the progress you make
-                        using Workout Notepad to plan, accelerate, and visualize your
-                        exercise regimen.
-                    </Text>
+    >
+        <Section>
+            <Row>
+                <Text className="text-base">
+                    Congratulations! We are excited to see the progress you make
+                    using Workout Notepad to plan, accelerate, and visualize your
+                    exercise regimen.
+                </Text>
 
-                    <Text className="text-base">Here's how to get started:</Text>
-                </Row>
-            </Section>
+                <Text className="text-base">Here's how to get started:</Text>
+            </Row>
+        </Section>
 
-            <Section className="my-[16px]">
-                {data.map((item, i) => 
-                    <Section key={i}>
-                        <Hr className="mx-0 my-[24px] w-full border border-solid !border-gray-300" />
-                        <Row>
-                            <Column className="align-baseline">
-                                <table className="text-center">
-                                    <td
-                                        align="center"
-                                        className="h-[40px] w-[40px] rounded-full bg-brand-200 p-0"
-                                    >
-                                        <Text className="m-0 font-semibold text-brand">{i + 1}</Text>
-                                    </td>
-                                </table>
-                            </Column>
-                            <Column className="w-[90%]">
-                                <Text className="m-0 text-[20px] font-semibold leading-[28px] text-gray-900">
-                                    {item.title}
-                                </Text>
-                                <Text className="m-0 mt-[8px] text-[16px] leading-[24px] text-gray-500">
-                                    {item.description}
-                                </Text>
-                            </Column>
-                        </Row>
-                    </Section>
-                )}
-            </Section>
-        </WNWrapper>
-    );
+        <Section className="my-[16px]">
+            {data.map((item, i) =>
+                <Section key={i}>
+                    <Hr className="mx-0 my-[24px] w-full border border-solid !border-gray-300" />
+                    <Row>
+                        <Column className="align-baseline">
+                            <table className="text-center">
+                                <td
+                                    align="center"
+                                    className="h-[40px] w-[40px] rounded-full bg-brand-200 p-0"
+                                >
+                                    <Text className="m-0 font-semibold text-brand">{i + 1}</Text>
+                                </td>
+                            </table>
+                        </Column>
+                        <Column className="w-[90%]">
+                            <Text className="m-0 text-[20px] font-semibold leading-[28px] text-gray-900">
+                                {item.title}
+                            </Text>
+                            <Text className="m-0 mt-[8px] text-[16px] leading-[24px] text-gray-500">
+                                {item.description}
+                            </Text>
+                        </Column>
+                    </Row>
+                </Section>
+            )}
+        </Section>
+    </WNWrapper>
+);
 
 export default WNWelcomeEmail

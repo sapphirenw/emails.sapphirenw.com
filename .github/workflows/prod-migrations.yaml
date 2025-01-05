@@ -1,0 +1,31 @@
+name: Run Prod Migrations
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  migrations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Goose
+        run: |
+          curl -L https://github.com/pressly/goose/releases/download/v3.24.0/goose_linux_x86_64 -o goose
+          chmod +x goose
+          sudo mv goose /usr/local/bin
+
+      - name: Apply Goose Migrations
+        env:
+          DB_DRIVER: mysql
+          PROD_MYSQL_USER: ${{ secrets.PROD_MYSQL_USER }}
+          PROD_MYSQL_PASS: ${{ secrets.PROD_MYSQL_PASS }}
+          PROD_MYSQL_HOST: ${{ secrets.PROD_MYSQL_HOST }}
+          PROD_MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
+        run: |
+          DB_STRING="$PROD_MYSQL_USER:$PROD_MYSQL_PASS@tcp($PROD_MYSQL_HOST:3306)/$PROD_MYSQL_DATABASE"
+          goose -dir=./database/migrations $DB_DRIVER $DB_STRING up
