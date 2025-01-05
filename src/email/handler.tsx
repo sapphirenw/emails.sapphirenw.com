@@ -7,6 +7,8 @@ import { fetchUser } from "../project/user/user";
 import { getLogger } from "@logtape/logtape";
 import { getResend } from "../resend/resend";
 
+const logger = getLogger("app")
+
 const app = new Hono()
 	.patch("/", async (c) => {
 		const rawBody = await c.req.json()
@@ -21,7 +23,6 @@ const app = new Hono()
 		return c.html(await render(react), 200)
 	})
 	.post("/", async (c) => {
-		const logger = await getLogger("app")
 		try {
 			// read and parse the body
 			const rawBody = await c.req.json()
@@ -90,7 +91,7 @@ const app = new Hono()
 			return c.json(data);
 		} catch (_e) {
 			const e = _e as Error
-			console.log(e.stack)
+			logger.error(e.message, { "stack": e.stack })
 			return c.json({ message: `${e.message}` }, 400)
 		}
 	})
