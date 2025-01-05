@@ -1,0 +1,55 @@
+name: CI Test Workflow
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: admin
+          MYSQL_PASSWORD: admin
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Replace with your Node.js version
+
+      - name: Install Goose
+        run: |
+          curl -L https://github.com/pressly/goose/releases/latest/download/goose_linux_amd64.tar.gz | tar -xz
+          sudo mv goose /usr/local/bin
+
+      - name: Wait for MySQL to Be Ready
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -u root -proot --silent; do
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
+
+      - name: Apply Goose Migrations
+        env:
+          DB_DRIVER: mysql
+          DB_STRING: "root:root@tcp(127.0.0.1:3306)/email"
+        run: |
+          goose -dir=./database/migrations mysql $DB_DRIVER $DB_STRING up
+
+      - name: Run Tests
+        run: npm test
