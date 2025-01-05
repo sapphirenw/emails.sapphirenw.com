@@ -50,7 +50,7 @@ jobs:
           DB_DRIVER: mysql
           DB_STRING: "root:root@tcp(127.0.0.1:3306)/email"
         run: |
-          goose -dir=./database/migrations mysql $DB_DRIVER $DB_STRING up
+          goose -dir=./database/migrations $DB_DRIVER $DB_STRING up
 
       - name: Run Tests
         run: npm test

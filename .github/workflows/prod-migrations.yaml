@@ -15,7 +15,8 @@ jobs:
 
       - name: Install Goose
         run: |
-          curl -L https://github.com/pressly/goose/releases/latest/download/goose_linux_amd64.tar.gz | tar -xz
+          curl -L https://github.com/pressly/goose/releases/download/v3.24.0/goose_linux_x86_64 -o goose
+          chmod +x goose
           sudo mv goose /usr/local/bin
 
       - name: Apply Goose Migrations
