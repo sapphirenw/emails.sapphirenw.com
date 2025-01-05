@@ -93,7 +93,7 @@ INSERT INTO project (
 INSERT INTO template (
     project_id, title, sender, subject
 ) VALUES (
-    1, 'Welcome to Workout Notepad', 'support@workoutnotepad.co', 'Welcome to Workout Notepad'
+    1, 'Welcome to Workout Notepad', 'Workout Notepad <support@workoutnotepad.co>', 'Welcome to Workout Notepad'
 );
 -- +goose StatementEnd
 

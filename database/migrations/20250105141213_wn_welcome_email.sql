@@ -6,7 +6,7 @@ INSERT INTO template (
     2,
     1,
     'How are things going?',
-    'support@workoutnotepad.co'
+    'Workout Notepad <support@workoutnotepad.co>'
 );
 -- +goose StatementEnd
 

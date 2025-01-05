@@ -52,7 +52,7 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 
 		// add field overrides
 		body.from = template.sender ?? body.from
-		body.subject = template.subject ?? body.subject
+		body.subject = template.title ?? body.subject
 
 		// add extra tags
 		if (body.tags === undefined) {
