@@ -7,28 +7,21 @@ import { fetchUser } from "../project/user/user";
 import { getLogger } from "@logtape/logtape";
 import { getResend } from "../resend/resend";
 
-const logger = getLogger("app")
-
 const app = new Hono()
 	.patch("/", async (c) => {
-		try {
-			const rawBody = await c.req.json()
-			if (!rawBody) {
-				return c.json({ message: "failed to read the body" }, 400)
-			}
-
-			// parse the body
-			const { body, template, react, plainText } = await renderEmail(rawBody)
-
-			// render as html
-			return c.html(await render(react), 200)
-		} catch (_e) {
-			const e = _e as Error
-			logger.error(e.message, { "stack": e.stack })
-			return c.json({ message: `${e.message}` }, 400)
+		const rawBody = await c.req.json()
+		if (!rawBody) {
+			return c.json({ message: "failed to read the body" }, 400)
 		}
+
+		// parse the body
+		const { body, template, react, plainText } = await renderEmail(rawBody)
+
+		// render as html
+		return c.html(await render(react), 200)
 	})
 	.post("/", async (c) => {
+		const logger = await getLogger("app")
 		try {
 			// read and parse the body
 			const rawBody = await c.req.json()
@@ -97,7 +90,7 @@ const app = new Hono()
 			return c.json(data);
 		} catch (_e) {
 			const e = _e as Error
-			logger.error(e.message, { "stack": e.stack })
+			console.log(e.stack)
 			return c.json({ message: `${e.message}` }, 400)
 		}
 	})
