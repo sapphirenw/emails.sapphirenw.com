@@ -90,7 +90,7 @@ const app = new Hono()
 			return c.json(data);
 		} catch (_e) {
 			const e = _e as Error
-			console.log(e.stack)
+			logger.error(e.message, { stack: e.stack })
 			return c.json({ message: `${e.message}` }, 400)
 		}
 	})
