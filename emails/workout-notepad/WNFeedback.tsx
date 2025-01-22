@@ -72,7 +72,7 @@ const WNFeedback: React.FC<Readonly<WNFeedbackProps>> = ({
 
         <Section className="mt-[32px]">
             <Link className="m-0" href="https://forms.gle/AtC9DDMwRWmVop7EA">
-                <Text className="m-0 text-base">Click here to fill out our full feedback form.</Text>
+                <Text className="m-0 text-xs text-center">Click here to fill out our full feedback form.</Text>
             </Link>
             <Text className="m-0 pt-4 text-xs text-slate-500">(Est time ~2 minutes)</Text>
             <Text className="m-0 text-xs text-slate-500">Filling out this form will NOT increase the frequency in which we contact you.</Text>
