@@ -16,6 +16,7 @@ import { bearerAuth } from "hono/bearer-auth"
 import { logfmt } from "./utils/logfmt"
 import { otelMiddleware } from "./middleware/otel"
 import { getOpenTelemetrySink } from "@logtape/otel";
+import { timeoutMiddleware } from "./middleware/timeout"
 
 // setup environment
 const VERSION = process.env.APP_VERSION ?? "v0.0.1-dev"
@@ -29,12 +30,14 @@ await configure({
                 url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs`,
             },
         }),
-        console: getConsoleSink({formatter: (record) => {
-            switch (process.env.LOG_FORMAT ?? "") {
-                case "json": return JSON.stringify(record)
-                default: return logfmt(record)
+        console: getConsoleSink({
+            formatter: (record) => {
+                switch (process.env.LOG_FORMAT ?? "") {
+                    case "json": return JSON.stringify(record)
+                    default: return logfmt(record)
+                }
             }
-        }}),
+        }),
     },
     loggers: [
         { category: ["logtape", "meta"], sinks: [] }, // hide metadata logging
@@ -63,12 +66,13 @@ const app = new Hono()
 app.use(requestId())
 app.use(otelMiddleware())
 app.use(loggerMiddleware)
+app.use(timeoutMiddleware)
 
 // auth middleware
 const authMiddleware = bearerAuth({ token: process.env.APP_API_KEY })
 app.use('*', (ctx, next) => {
-    if (!ctx.req.path.startsWith('/unsubscribe') && !ctx.req.path.startsWith('/webhooks') ) {
-      return authMiddleware(ctx, next)
+    if (!ctx.req.path.startsWith('/unsubscribe') && !ctx.req.path.startsWith('/webhooks')) {
+        return authMiddleware(ctx, next)
     }
     return next()
 })
@@ -88,7 +92,7 @@ app.get("/", async (c) => {
         logger.fatal("failed to get the index", {
             "stack": e.stack,
         })
-        return c.json({message: `${e.message}`, version: VERSION}, 400)
+        return c.json({ message: `${e.message}`, version: VERSION }, 400)
     }
 })
 
