@@ -41,8 +41,8 @@ await configure({
     },
     loggers: [
         { category: ["logtape", "meta"], sinks: [] }, // hide metadata logging
-        { category: ["app"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["otel"] },
-        { category: ["middleware"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["otel"] },
+        { category: ["app"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["console", "otel"] },
+        { category: ["middleware"], lowestLevel: "debug", sinks: VERSION.includes("dev") ? ["console"] : ["console", "otel"] },
     ]
 });
 
