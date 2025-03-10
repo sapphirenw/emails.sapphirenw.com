@@ -1,7 +1,9 @@
 {
     "projectId": 1,
     "templateId": 2,
-    "attributes": {},
+    "attributes": {
+        "userId": "oiasengoisnrutniudnuidvrdv"
+    },
     "subject": "",
     "from": "",
     "to": "jakerlanders@gmail.com",
