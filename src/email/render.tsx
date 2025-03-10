@@ -10,7 +10,7 @@ import WNFeedback from '../../emails/workout-notepad/WNFeedback';
 export type EmailBody = {
 	projectId: number
 	templateId: number
-	attributes: Object
+	attributes: any
 	type: string | "marketing"
 
 	subject: string
@@ -88,6 +88,7 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 				rendered = <WNFeedback
 					recipient={body.to}
 					unsubscribeLink={unsubLink}
+					userId={body.attributes.userId}
 				/>
 				break
 			default:
