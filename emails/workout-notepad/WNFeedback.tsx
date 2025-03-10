@@ -28,8 +28,8 @@ const WNFeedback: React.FC<Readonly<WNFeedbackProps>> = ({
         <Section>
             <Row>
                 <Text className="text-base">
-                    Thank you for trying out Workout Notepad! We are a small enthusiastic team
-                    hoping to create the best workout tracking experience for people like us.
+                    Thank you for trying out Workout Notepad! We are an enthusiastic team
+                    hoping to create the best workout tracking experience for all types of people.
                 </Text>
                 <Text className="text-base">
                     With that, we are asking for your help! You (hopefully) have been using this app,
