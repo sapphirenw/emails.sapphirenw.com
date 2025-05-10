@@ -14,46 +14,55 @@ import type { MiddlewareHandler } from "hono";
 let rawTracer: Tracer | undefined;
 
 export const otelMiddleware = (): MiddlewareHandler => async (ctx, next) => {
-    const logger = getLogger("app")
+  const logger = getLogger("app")
 
-    if (!rawTracer) {
-      rawTracer = trace.getTracer("hono", process.env.APP_VERSION);
-    }
+  if (!rawTracer) {
+    rawTracer = trace.getTracer("hono", process.env.APP_VERSION);
+  }
 
-    const span = rawTracer.startSpan(
-      "opentelemetry.infrastructure.middleware",
-      {
-        attributes: {
-          "http.method": ctx.req.method,
-          "http.url": ctx.req.url,
-        },
-        kind: SpanKind.SERVER,
+  const span = rawTracer.startSpan(
+    "opentelemetry.infrastructure.middleware",
+    {
+      attributes: {
+        "http.method": ctx.req.method,
+        "http.url": ctx.req.url,
       },
-      propagation.extract(context.active(), ctx.req.raw.headers),
-    );
+      kind: SpanKind.SERVER,
+    },
+    propagation.extract(context.active(), ctx.req.raw.headers),
+  );
 
-    try {
-      await context.with(trace.setSpan(context.active(), span), async () => {
-        await next();
-      });
-      if (ctx.error) {
-        logger.error(ctx.error.message);
-        span.recordException(ctx.error);
-        span.setStatus({
-          code: SpanStatusCode.ERROR,
-          message: ctx.error.message,
-        });
-      } else {
-        span.setStatus({ code: SpanStatusCode.OK });
-      }
-    } catch (error) {
-      logger.error(error instanceof Error ? error.message : "unknown error");
-      span.recordException(error as Error);
+  try {
+    await context.with(trace.setSpan(context.active(), span), async () => {
+      await next();
+    });
+    if (ctx.error) {
+      logger.error(ctx.error.message);
+      span.recordException(ctx.error);
       span.setStatus({
         code: SpanStatusCode.ERROR,
-        message: error instanceof Error ? error.message : "unknown error",
+        message: ctx.error.message,
       });
-      throw error;
+    } else {
+      const statusCode = ctx.res.status;
+      if (statusCode >= 400) {
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: `${statusCode}`,
+        });
+      } else {
+        // you can omit this since OK/UNSET is the default
+        span.setStatus({ code: SpanStatusCode.OK });
+      }
     }
-    span.end();
-  };
+  } catch (error) {
+    logger.error(error instanceof Error ? error.message : "unknown error");
+    span.recordException(error as Error);
+    span.setStatus({
+      code: SpanStatusCode.ERROR,
+      message: error instanceof Error ? error.message : "unknown error",
+    });
+    throw error;
+  }
+  span.end();
+};

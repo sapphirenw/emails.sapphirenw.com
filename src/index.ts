@@ -1,5 +1,5 @@
 import "./utils/env"
-import "./instrumentation"
+import startOtel from "./instrumentation"
 
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
@@ -21,6 +21,8 @@ import { timeoutMiddleware } from "./middleware/timeout"
 // setup environment
 const VERSION = process.env.APP_VERSION ?? "v0.0.1-dev"
 const PORT = Number(process.env.APP_PORT ?? "3000")
+
+startOtel()
 
 await configure({
     sinks: {

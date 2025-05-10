@@ -8,8 +8,9 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 
-// only use otel in dev mode
-if (!process.env.APP_VERSION!.includes("dev")) {
+export default function startOtel() {
+  console.log("Starting otel sdk ...")
+  // only use otel in dev mode
   const sdk = new NodeSDK({
     serviceName: process.env.OTEL_SERVICE_NAME ?? "emails.sapphirenw.com",
     traceExporter: new OTLPTraceExporter({
@@ -28,8 +29,9 @@ if (!process.env.APP_VERSION!.includes("dev")) {
       getNodeAutoInstrumentations()
     ],
   });
-  
+
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
-  
+
   sdk.start();
+  console.log("Started otel sdk")
 }
