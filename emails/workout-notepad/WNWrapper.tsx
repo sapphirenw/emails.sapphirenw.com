@@ -89,10 +89,10 @@ export const WNWrapper: React.FC<Readonly<WNWrapperProps>> = ({
 
                 <Container className="mt-20">
                     <Text className="text-center text-gray-400 mb-45">
-                        <Link href="https://workoutnotepad.co" className="text-gray-400 underline">workoutnotepad.co</Link> - Portland, OR
+                        Visit us: <Link href="https://workoutnotepad.co" className="text-gray-400 underline">https://workoutnotepad.co</Link>
                     </Text>
                     {unsubscribeLink == "" ? null : <Text className="text-center text-sm text-brand-500">
-                        <Link href={unsubscribeLink} className="text-gray-400 text-xs">Unsubscribe</Link>
+                        <Link href={unsubscribeLink} className="text-gray-400 text-xs underline">Unsubscribe</Link>
                     </Text>}
                 </Container>
             </Body>
