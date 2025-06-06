@@ -6,6 +6,7 @@ import { render } from '@react-email/components';
 import { encodeUnsubscribe } from '../project/user/unsubscribe';
 import { v4 } from 'uuid';
 import WNFeedback from '../../emails/workout-notepad/WNFeedback';
+import WNReEngagementEmail from '../../emails/workout-notepad/WNReEngagement';
 
 export type EmailBody = {
 	projectId: number
@@ -50,7 +51,7 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 			throw Error("failed to get the template")
 		}
 
-		// add field overrides
+		// add field overrides // TODO: this is the wrong order
 		body.from = template.sender ?? body.from
 		body.subject = template.title ?? body.subject
 
@@ -89,6 +90,12 @@ export async function renderEmail(body: EmailBody): Promise<RenderEmailResponse>
 					recipient={body.to}
 					unsubscribeLink={unsubLink}
 					userId={body.attributes.userId}
+				/>
+				break
+			case 3:
+				rendered = <WNReEngagementEmail
+					recipient={body.to}
+					unsubscribeLink={unsubLink}
 				/>
 				break
 			default:
