@@ -41,11 +41,26 @@ const WNFeedback: React.FC<Readonly<WNFeedbackProps>> = ({
                     Contributing is easy, and all it takes is giving us a single click feedback below,
                     and optionally filling out a form that we have attached.
                 </Text>
+                <Text className="text-base">
+                    In addition, we would like to gift you 2 weeks free of Workout Notepad premium. Open the app
+                    and input promo code TRYFREE. <Link href="https://docs.workoutnotepad.co/guides/promo-code/" className="text-brand-500">View our documentation</Link> on how to input promo codes in the app.
+                </Text>
             </Row>
         </Section>
 
+        <Section className="grid place-items-center">
+            <table className="text-center">
+                <td
+                    align="center"
+                    className="rounded-md bg-brand-200 px-6 py-3"
+                >
+                    <Text className="m-0 font-semibold text-brand">TRYFREE</Text>
+                </td>
+            </table>
+        </Section>
+
         <Section className="my-[16px]">
-            <Text className="text-base">How has Workout Notepad been working for you?</Text>
+            <Text className="text-base">How has Workout Notepad been working for you? (Click Below)</Text>
             <Section className="rounded-md overflow-hidden">
                 <Row>
                     <Column className="w-[25%] h-10 bg-brand-50">

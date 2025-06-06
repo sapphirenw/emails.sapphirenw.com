@@ -66,7 +66,9 @@ const WNReEngagementEmail: React.FC<Readonly<WNReEngagementProps>> = ({
 
                 <Text className="text-base">
                     Ensure your app is up to date, navigate to settings, then input this
-                    promotion code to redeem your 3 months: (code: WEMISSYOU)
+                    promotion code to redeem your 3 months.
+                    In addition, <Link href="https://docs.workoutnotepad.co/guides/promo-code/" className="text-brand-500">view our documentation</Link> on how to input promo codes in the app.
+                    (code: WEMISSYOU)
                 </Text>
 
                 <Section className="grid place-items-center">
