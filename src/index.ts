@@ -22,7 +22,7 @@ import { timeoutMiddleware } from "./middleware/timeout"
 const VERSION = process.env.APP_VERSION ?? "v0.0.1-dev"
 const PORT = Number(process.env.APP_PORT ?? "3000")
 
-// startOtel()
+startOtel()
 
 await configure({
     sinks: {
@@ -66,7 +66,7 @@ if (process.env.APP_API_KEY === undefined) {
 // create the app with middleware
 const app = new Hono()
 app.use(requestId())
-// app.use(otelMiddleware())
+app.use(otelMiddleware())
 app.use(loggerMiddleware)
 app.use(timeoutMiddleware)
 

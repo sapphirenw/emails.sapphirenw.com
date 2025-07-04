@@ -1,5 +1,4 @@
-include $(shell echo .env)
-export
+-include .env
 
 .PHONY: run
 run:
